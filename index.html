@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kendra Created It | Hand Art Prompt Generator</title>
+  <style>
+    :root {
+      --pink: #ff4fa3;
+      --yellow: #ffd84d;
+      --black: #111111;
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, var(--black) 0%, #1f1f1f 50%, #2a2a2a 100%);
+      color: var(--white);
+      min-height: 100vh;
+    }
+
+    .wrap {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 32px 18px 48px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 22px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: rgba(255,255,255,0.06);
+      border: 2px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      box-shadow: 0 14px 40px rgba(0,0,0,0.28);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand-panel {
+      padding: 28px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top left, rgba(255,79,163,0.25), transparent 35%),
+        radial-gradient(circle at bottom right, rgba(255,216,77,0.18), transparent 35%);
+      pointer-events: none;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--yellow);
+      color: var(--black);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    h1 {
+      margin: 0 0 12px;
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.05;
+    }
+
+    .accent { color: var(--pink); }
+
+    .hero p {
+      margin: 0;
+      line-height: 1.6;
+      color: rgba(255,255,255,0.9);
+      max-width: 62ch;
+    }
+
+    .mini-brand {
+      margin-top: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.1);
+      font-weight: 700;
+      flex-wrap: wrap;
+    }
+
+    .mini-brand span:first-child { color: var(--yellow); }
+
+    .reference-panel {
+      padding: 24px;
+      background: linear-gradient(180deg, rgba(255,79,163,0.12), rgba(255,216,77,0.08));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .reference-title {
+      margin-bottom: 12px;
+      color: var(--yellow);
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .reference-panel ul {
+      margin: 0;
+      padding-left: 18px;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .generator {
+      padding: 28px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 1.35rem;
+    }
+
+    .sub {
+      color: rgba(255,255,255,0.72);
+      font-size: 0.95rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .field label {
+      font-weight: 700;
+      color: var(--white);
+    }
+
+    select, textarea {
+      width: 100%;
+      border-radius: 16px;
+      border: 2px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.96);
+      color: var(--black);
+      padding: 14px;
+      font-size: 0.98rem;
+      outline: none;
+      transition: .2s ease;
+    }
+
+    select:focus, textarea:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 0 4px rgba(255,79,163,0.14);
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+      margin-top: 18px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 13px 18px;
+      font-size: 0.96rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform .15s ease, opacity .15s ease;
+    }
+
+    button:hover { transform: translateY(-1px); }
+
+    .primary { background: var(--pink); color: var(--white); }
+    .secondary { background: var(--yellow); color: var(--black); }
+    .ghost { background: var(--white); color: var(--black); }
+
+    .output-wrap {
+      margin-top: 22px;
+      background: rgba(0,0,0,0.28);
+      border: 2px dashed rgba(255,216,77,0.36);
+      border-radius: 20px;
+      padding: 18px;
+    }
+
+    .output-wrap h3 {
+      margin: 0 0 10px;
+      color: var(--yellow);
+    }
+
+    .output {
+      white-space: pre-wrap;
+      line-height: 1.7;
+      color: rgba(255,255,255,0.96);
+      min-height: 120px;
+    }
+
+    .footer-note {
+      margin-top: 14px;
+      font-size: .9rem;
+      color: rgba(255,255,255,0.68);
+    }
+
+    @media (max-width: 860px) {
+      .hero, .grid { grid-template-columns: 1fr; }
+      .wrap { padding: 22px 14px 36px; }
+      .brand-panel, .reference-panel, .generator { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="card brand-panel">
+        <div class="badge">Prompt Tool</div>
+        <h1>Luxury <span class="accent">Hand Art</span><br />Prompt Generator</h1>
+        <p>
+          Build stylish hand-only art prompts inspired by glossy nails, stacked jewelry, luxe adornments, and elegant object-holding poses. The design uses your brand colors only in the branding, and the prompt output stays brand-free.
+        </p>
+        <div class="mini-brand"><span>Kendra Created It</span><span>•</span><span>Pink • Yellow • White • Black</span></div>
+      </div>
+
+      <div class="card reference-panel">
+        <div class="reference-title">Built for your hand-art direction</div>
+        <ul>
+          <li>Hand-only artwork with no full person shown</li>
+          <li>Different skin tones and ethnicity-inspired hand options</li>
+          <li>Nails, jewelry, adornments, and object-holding poses</li>
+          <li>Includes art styles like Chibi, Bratz, Anime, Pixar, Hyper-realistic, and Editorial / glossy</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card generator">
+      <div class="section-title">
+        <div>
+          <h2>Create Your Hand Art Prompt</h2>
+          <div class="sub">Five dropdown sections, all starting with none.</div>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="field">
+          <label for="artStyle">1. Art Style</label>
+          <select id="artStyle">
+            <option>none</option>
+            <option>Chibi style</option>
+            <option>Bratz-inspired style</option>
+            <option>Anime style</option>
+            <option>Pixar-inspired 3D style</option>
+            <option>Hyper-realistic style</option>
+            <option>Editorial / glossy style</option>
+            <option>luxury digital illustration style</option>
+            <option>beauty campaign style</option>
+            <option>3D polished render style</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="skinTone">2. Hand Tone / Ethnicity</label>
+          <select id="skinTone">
+            <option>none</option>
+            <option>deep rich brown skin</option>
+            <option>warm medium brown skin</option>
+            <option>golden brown skin</option>
+            <option>caramel brown skin</option>
+            <option>light brown skin</option>
+            <option>deep ebony skin</option>
+            <option>olive skin</option>
+            <option>tan skin</option>
+            <option>fair skin</option>
+            <option>freckled fair skin</option>
+            <option>South Asian inspired hand tone</option>
+            <option>East Asian inspired hand tone</option>
+            <option>Latina inspired hand tone</option>
+            <option>mixed tone gradient hand styling</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="objectHeld">3. Object / What the Hand Holds</label>
+          <select id="objectHeld">
+            <option>none</option>
+            <option>holding a luxury phone</option>
+            <option>holding a stack of money</option>
+            <option>holding a pen</option>
+            <option>holding a makeup brush</option>
+            <option>holding a coffee cup</option>
+            <option>holding a designer-style purse handle</option>
+            <option>holding a gas pump handle</option>
+            <option>holding sunglasses</option>
+            <option>holding a lipstick tube</option>
+            <option>holding flowers</option>
+            <option>holding a keyring</option>
+            <option>holding a shopping bag handle</option>
+            <option>resting naturally with no object</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="nailDesign">4. Nails / Nail Art</label>
+          <select id="nailDesign">
+            <option>none</option>
+            <option>long coffin nails with minimal nude glossy finish</option>
+            <option>long stiletto nails with French tip nail art</option>
+            <option>medium almond nails with rhinestone accent nail art</option>
+            <option>short square nails with no nail art</option>
+            <option>extra long tapered square nails with gold foil details</option>
+            <option>soft oval nails with butterfly nail art</option>
+            <option>glossy rounded acrylic nails with chrome mirror finish</option>
+            <option>nude marble nails with 3D gem embellishments</option>
+            <option>airbrushed ombré nails with floral details</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="adornments">5. Jewelry / Adornments</label>
+          <select id="adornments">
+            <option>none</option>
+            <option>no jewelry or adornments</option>
+            <option>stacked gold rings and bracelets</option>
+            <option>diamond rings with layered bangles</option>
+            <option>pearl and gold mixed jewelry</option>
+            <option>chunky luxury bracelets and statement rings</option>
+            <option>delicate minimalist rings and chains</option>
+            <option>heavy gold jewelry with charm accents</option>
+            <option>watch, bangles, and mixed gemstone rings</option>
+            <option>hand chains, cuffs, and decorative finger jewelry</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="extras">Optional custom details</label>
+        <textarea id="extras" placeholder="Add extra notes here like pose, camera angle, hand position, glossy lighting, close-up crop, background, luxury mood, or anything else you want."></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="primary" onclick="generatePrompt()">Generate Prompt</button>
+        <button class="secondary" onclick="randomizeSelections()">Randomize</button>
+        <button class="ghost" onclick="copyPrompt()">Copy Prompt</button>
+        <button class="ghost" onclick="resetForm()">Reset</button>
+      </div>
+
+      <div class="output-wrap">
+        <h3>Your Prompt</h3>
+        <div class="output" id="output">Your generated hand art prompt will appear here.</div>
+      </div>
+
+      <div class="footer-note">
+        Branding stays in the design only. The generated prompt does not include the brand tag.
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const selects = [
+      document.getElementById('artStyle'),
+      document.getElementById('skinTone'),
+      document.getElementById('objectHeld'),
+      document.getElementById('nailDesign'),
+      document.getElementById('adornments')
+    ];
+
+    function cleanValue(value) {
+      return value && value !== 'none' ? value : '';
+    }
+
+    function generatePrompt() {
+      const artStyle = cleanValue(document.getElementById('artStyle').value);
+      const skinTone = cleanValue(document.getElementById('skinTone').value);
+      const objectHeld = cleanValue(document.getElementById('objectHeld').value);
+      const nailDesign = cleanValue(document.getElementById('nailDesign').value);
+      const adornments = cleanValue(document.getElementById('adornments').value);
+      const extras = document.getElementById('extras').value.trim();
+
+      const selected = [artStyle, skinTone, objectHeld, nailDesign, adornments].filter(Boolean);
+
+      let base = 'A highly detailed hand-focused artwork featuring stylish feminine hand composition';
+
+      if (selected.length) {
+        base += ' with ' + selected.join(', ');
+      }
+
+      base += '. The artwork should focus only on the hand or hands, with polished beauty-editorial styling, clean composition, glossy lighting, luxury details, ultra-sharp focus, elegant pose energy, and a premium high-end aesthetic.';
+      base += ' Show only hand art with no full person, no face, no body, no text, and no watermark.';
+
+      if (extras) {
+        base += ' Additional details: ' + extras + '.';
+      }
+
+      document.getElementById('output').textContent = base;
+    }
+
+    function randomizeSelections() {
+      selects.forEach(select => {
+        const options = Array.from(select.options);
+        const randomIndex = Math.floor(Math.random() * options.length);
+        select.selectedIndex = randomIndex;
+      });
+      generatePrompt();
+    }
+
+    function copyPrompt() {
+      const text = document.getElementById('output').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Prompt copied!');
+      });
+    }
+
+    function resetForm() {
+      selects.forEach(select => select.selectedIndex = 0);
+      document.getElementById('extras').value = '';
+      document.getElementById('output').textContent = 'Your generated hand art prompt will appear here.';
+    }
+  </script>
+</body>
+</html>
